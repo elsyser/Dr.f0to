@@ -44,19 +44,37 @@ class PoseChecker{
     }
 
     getEyes(){
-        // var buff = poses[0].pose;
-        if(this.isModelLoaded){
-            console.log(poses[0].pose);
-        //     for(var i=0;i<buff.keypoint.length;i++){
-        //         var keypoint = buff.keypoint[0];
-        //         if(keypoint.part == 'nose'){
-        //             console.log("KUREC");
-        //         }
-        //         console.log(keypoint);
-        //     }
-            // for(var keypoint of buff.keypoint){
-
-            // }
+        var toReturn = {
+            left:null,
+            right:null
+        };
+        if(this.isModelLoaded && poses[0]){
+            var keypoints = poses[0].pose.keypoints;
+            for(var i=0;i<keypoints.length;i++){
+                var keypoint = keypoints[i];
+                if(keypoint.part == 'leftEye'){
+                    toReturn.left = keypoint.position; 
+                }else if(keypoint.part == 'rightEye')
+                    toReturn.right = keypoint.position;
+            }
         }
+        return toReturn;
+    }
+    getShoulder(){
+        var toReturn = {
+            left:null,
+            right:null
+        };
+        if(this.isModelLoaded && poses[0]){
+            var keypoints = poses[0].pose.keypoints;
+            for(var i=0;i<keypoints.length;i++){
+                var keypoint = keypoints[i];
+                if(keypoint.part == 'rightShoulder'){
+                    toReturn.left = keypoint.position; 
+                }else if(keypoint.part == 'leftShoulder')
+                    toReturn.right = keypoint.position;
+            }
+        }
+        return toReturn;
     }
 }
