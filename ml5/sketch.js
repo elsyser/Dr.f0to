@@ -5,11 +5,11 @@ let poseNet;
 
 
 const options = { 
-  imageScaleFactor: 0.3,
+  imageScaleFactor: 0.2,
   outputStride: 16,
   flipHorizontal: false,
   minConfidence: 0.5,
-  maxPoseDetections: 5,
+  maxPoseDetections: 1,
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'single',
@@ -35,8 +35,9 @@ function draw() {
   image(video, 0, 0, width, height);
 
 
-  poseNet.getEyes();
+  console.log(poseNet.getEyes());
 
+  // poseNet.getEyes();
   poseNet.update();
 
 }
