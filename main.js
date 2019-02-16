@@ -7,12 +7,23 @@ const {
   Notification
 } = require('electron');
 
+const express = require('express')();
+
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let appIcon = null;
 
 function createWindow() {
+
+  express.listen(6969 , ()=>{
+    console.log("Express is listening");
+  });
+
+  //Change app name
+  app.setName("Dr.F0to");
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -94,6 +105,11 @@ const quitApp = function(){
   app.exit();
   app.quit();
 };
+
+
+express.get("/hello" , (req , res)=>{
+
+});
 
 // app.on('activate', function () {
 //   // On macOS it's common to re-create a window in the app when the

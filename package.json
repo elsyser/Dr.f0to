@@ -1,18 +1,18 @@
 {
-  "name": "electron-quick-start",
+  "name": "Dr.f0to",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Pose net based Digital wellbeing",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/elsyser/Dr.f0to",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Dr.f0to",
+    "posenet",
+    "digital",
+    "wellbeing",
+    "hackaton"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
