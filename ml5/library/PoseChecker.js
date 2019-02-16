@@ -8,7 +8,9 @@ class PoseChecker{
         this.options = options;
         this.source = source;
         this.isLoaded = false;
-        this.threshold = 80;
+        this.hunchedThreshold = 50;
+        this.shoulderAngleThreshold = 5;
+        this.headAngleThreshold = 5;
         this.normalESD = null;
     }
 
@@ -96,6 +98,35 @@ class PoseChecker{
             (shoulders.left.x + shoulders.right.x)/2 , (shoulders.left.y + shoulders.right.y)/2 );
         }
     }
+
+    /**
+     * Get the shoulder angle
+     * @returns {Float} The angle
+     */
+    getShoulderAngle(){
+        if(this.isPersonAvailable()){
+            var shoulders = this.getShoulders();
+            var deltaX = shoulders.left.x - shoulders.right.x;
+            var deltaY = shoulders.left.y - shoulders.right.y;
+            return Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+        }
+        return null;
+    }
+
+    /**
+     * Get the head angle
+     * @returns {Float} The angle
+     */
+    getHeadAngle(){
+        if(this.isPersonAvailable()){
+            var eyes = this.getEyes();
+            var deltaX = eyes.left.x - eyes.right.x;
+            var deltaY = eyes.left.y - eyes.right.y;
+            return Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+        }
+        return null;
+    }
+
 
 
     isPersonAvailable(){

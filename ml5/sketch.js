@@ -5,7 +5,7 @@ let isCallibrated = false;
 // let skeletons = [];
 
 
-const options = { 
+const poseNet_options = { 
   imageScaleFactor: 0.2,
   outputStride: 16,
   flipHorizontal: false,
@@ -16,15 +16,27 @@ const options = {
   detectionType: 'single',
   multiplier: 0.75,
  };
+ const video_options = {
+  video: {
+    mandatory: {
+      minWidth: 640,
+      minHeight: 480
+    },
+    optional: [{ 
+      maxFrameRate: 3 ,
+    }]
+  },
+  audio: false
+};
  
 
 function setup() {
   createCanvas(640, 480);
-  video = createCapture(VIDEO);
+  video = createCapture(video_options);
   video.size(width, height);
   document.getElementById("callibratePose").addEventListener('click', handleCallibration , false);
 
-  poseNet = new PoseChecker(video , options);
+  poseNet = new PoseChecker(video , poseNet_options);
 
   poseNet.begin();
 
@@ -40,8 +52,15 @@ function draw() {
 
   if(isCallibrated){
     var currESD = poseNet.getCurrentESD();
-    if(abs(currESD - poseNet.normalESD) > poseNet.threshold && poseNet.isPersonAvailable())
+    if(abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()){
       console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
+    }
+    if(abs(abs(poseNet.getShoulderAngle())-180)>poseNet.shoulderAngleThreshold && poseNet.getShoulderAngle() != null){
+      console.log("RAMENETE WE");
+    }
+    if(abs(poseNet.getHeadAngle())>poseNet.headAngleThreshold){
+      console.log("Izprai si glawata wee");
+    }
   }
 
   // poseNet.getEyes();
