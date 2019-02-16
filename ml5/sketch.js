@@ -35,7 +35,7 @@ const video_options = {
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 150, windowHeight);
   video = createCapture(video_options);
   video.size(width, height);
   document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
@@ -49,7 +49,7 @@ function setup() {
 
   
   
-  var cnv = document.getElementById("defaultCanvas0").getContext("2d");
+  var cnv = document.getElementById("chart").getContext("2d");
   chart  = new DataHandler(cnv , {
     diagramName: "ESD (Eye-Shoulder Distance)",
     xName: "Time",
@@ -62,10 +62,16 @@ function setup() {
       chart.pushData(new Date().toLocaleTimeString() , esd);
     }
   } , 1000);
+  chart.addDataset([123,43,123,55] , 'spine');
 
 }
 
 function draw() {
+  if(mouseIsPressed){
+    chart.pushData([1,2,3,4] , [123,43,123,55] , 'spine');
+  }
+
+
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
     var currEED = poseNet.getCurrentEED();
@@ -83,6 +89,10 @@ function draw() {
     }
   }
 
+  var path = window.location.href , path = path.slice(path.length-1 , path.length);
+  // console.log(window.location.href);
+
+
   // poseNet.getEyes();
   poseNet.update();
 
@@ -98,4 +108,8 @@ function handleCallibration() {
     console.log("Callibrated dist:", poseNet.normalESD);
 
   }
+}
+
+function windowResized(){
+  resizeCanvas(window.width , window.height);
 }
