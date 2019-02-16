@@ -1,5 +1,6 @@
 let video;
 let poseNet;
+let isCallibrated = false;
 // let poses = [];
 // let skeletons = [];
 
@@ -21,7 +22,7 @@ function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
   video.size(width, height);
-  document.getElementById("callibratePose" , handleCallibration , false);
+  document.getElementById("callibratePose").addEventListener('click', handleCallibration , false);
 
   poseNet = new PoseChecker(video , options);
 
@@ -34,8 +35,14 @@ function setup() {
 function draw() {
   image(video, 0, 0, width, height);
 
+  var shoulders = poseNet.getShoulders();
 
-  console.log(poseNet.getEyes());
+
+  if(isCallibrated){
+    var currESD = poseNet.getCurrentESD();
+    if(abs(currESD - poseNet.normalESD) > poseNet.threshold && poseNet.isPersonAvailable())
+      console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
+  }
 
   // poseNet.getEyes();
   poseNet.update();
@@ -43,4 +50,12 @@ function draw() {
 }
 
 function handleCallibration(){
+    if(poseNet.isLoaded){
+      var shoulders = poseNet.getShoulders();
+      var eyes = poseNet.getEyes();
+      poseNet.setNormalESD(eyes , shoulders);
+      isCallibrated = true;
+      console.log("Callibrated dist:" , poseNet.normalESD);
+
+    }
 }
