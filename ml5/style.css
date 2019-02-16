@@ -1,16 +1,23 @@
+:root {
+  --main-fg-color: #017ae0;
+  --main-bg-color: rgb(206, 208, 236);
+  --main-hover-color: #3c77a8;
+}
+
 #defaultCanvas0{
     margin-left: 13%;
     border-radius: 25px;
 }
 
 #chart{
-    margin-left: 13%;
+    margin-left: 0;
     border-radius: 25px;
 }
 
 #chartWrapper {
-  /* width: 85%;
-  height: 80%; */
+  position: relative; 
+  height: 88%; 
+  width: 86%;
   margin-left: 13%;
   background-color: rgb(255, 255, 255);
   border-radius: 25px;
@@ -21,12 +28,13 @@ body {
   padding: 0; 
   margin: 0;     
   overflow:hidden;
-  background-color: rgb(206, 208, 236);
+  background-color: var(--main-bg-color);
+  font-family: Lato;
 }
 
 /* Add a background color to the top navigation */
 .topnav {
-    background-color: rgb(206, 208, 236);
+    background-color: var(--main-bg-color);
     margin-left: 12%;
     overflow: hidden;
   }
@@ -40,20 +48,21 @@ body {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 14px;
     margin: 1%;
+    margin-right: 0;
   }
   
   /* Change the color of links on hover */
   .topnav a:hover {
     
-    background-color: #3c77a8;
+    background-color: var(--main-hover-color);
     color: #ffffff;
   }
   
   /* Add a color to the active/current link */
   .topnav a.active {
-    background-color: #017ae0;
+    background-color: var(--main-fg-color);
     color: #ffffff;
   }
 
@@ -65,7 +74,7 @@ body {
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
     left: 0;
-    background-color: #017ae0;
+    background-color: var(--main-fg-color);
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
@@ -84,7 +93,7 @@ body {
   /* When you mouse over the navigation links, change their color */
   .sidenav a:hover {
     color: #f1f1f1;
-    background-color: #3c77a8;
+    background-color: var(--main-hover-color);
   }
 
   /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
