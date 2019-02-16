@@ -1,20 +1,21 @@
 import json
-from . import dataloader
 
-from keras.applications.inception_v3 import InceptionV3
-from keras.applications.resnet50 import ResNet50
-from keras.applications.vgg16 import VGG16
-from keras.applications.vgg19 import VGG19
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from keras.layers import (BatchNormalization, Conv2D, Dense, Dropout, Flatten,
+from tensorflow.keras.applications.inception_v3 import InceptionV3
+from tensorflow.keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.vgg19 import VGG19
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.layers import (BatchNormalization, Conv2D, Dense, Dropout, Flatten,
                           GlobalAveragePooling2D, MaxPooling2D)
-from keras.models import Model, Sequential
-from keras.utils import plot_model
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.utils import plot_model
+
+from . import dataloader
 
 __all__ = [
     'DFNeuralNet',
     'TransferLearningNN',
-    'ConvolutionalNN',
+    'ConvNet',
 ]
 
 
@@ -53,21 +54,12 @@ class TransferLearningNN(DFNeuralNet):
     def __init__(self, model_name, num_bottom_layers_to_keep=20):
         self.model_name = model_name
         self.num_bottom_layers_to_keep = num_bottom_layers_to_keep
+    
+        self.model = None
+        self._init_model()
 
     def _init_model(self):
-        base_model = self._get_base_model()
-
-        top_layer_model = base_model.output
-        top_layer_model = GlobalAveragePooling2D()(top_layer_model)
-        top_layer_model = Dense(1024, activation='relu')(top_layer_model)
-        prediction_layer = Dense(len(dataloader.LABELS_MAP.values()), activation='softmax')(top_layer_model)
-
-        model = Model(input=base_model.input, output=prediction_layer)
-        print(model.summary())
-        for layer in base_model.layers:
-            layer.trainable = False
-        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        self.model = model
+        pass
 
     def _get_base_model(self):
         if self.model_name == 'inception_v3':
@@ -81,24 +73,20 @@ class TransferLearningNN(DFNeuralNet):
         else:
             raise ValueError('Cannot find base model %s' % self.model_name)
 
-    def fit(self, x, y, epochs=50, validation_split=0.25):
-        self.model.fit(
-            x=x, y=y, epochs=epochs,
-            validation_split=validation_split, verbose=1,
-            callbacks=[ReduceLROnPlateau(), EarlyStopping(patience=3)], shuffle=True
-        )
+    def fit(self, x, y, epochs=50):
+        """Fine tuning
+        """
 
         for layer in self.model.layers[self.num_bottom_layers_to_keep:]:
             layer.trainable = True
 
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         self.model.fit(
-            x=x, y=y, epochs=50,
-            validation_split=validation_split, verbose=1,
-            callbacks=[ReduceLROnPlateau(), EarlyStopping(patience=3)], shuffle=True
+            x=x, y=y, epochs=50, verbose=1,
+            callbacks=[ReduceLROnPlateau(), EarlyStopping(patience=3)]
         )
 
-class ConvolutionalNN(DFNeuralNet):
+class ConvNet(DFNeuralNet):
     def __init__(self, img_shape, filters=10, kernel_size=(4, 4), activation='relu', verbose=False):
 
         self.img_shape = img_shape        
@@ -107,11 +95,14 @@ class ConvolutionalNN(DFNeuralNet):
         self.activation = activation
         self.verbose = verbose
 
+        self.model = None
+        self._init_model()
+
     def _init_model(self):
         # TODO: implement
         pass
 
     def fit(self, image_data, labels, validation_split, epochs=50):
-        self.model.compile(optimizer='RMSProp', loss='cosine_proximity', metrics=['accuracy'])
+        self.model.compile(optimizer='RMSprop', loss='categorical_crossentropy', metrics=['accuracy'])
         self.model.fit(image_data, labels, epochs=epochs, validation_split=validation_split,
                        callbacks=[ReduceLROnPlateau(), EarlyStopping(patience=3)])

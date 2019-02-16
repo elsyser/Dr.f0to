@@ -12,7 +12,6 @@ numpy = "*"
 tensorflow = "*"
 pandas = "*"
 matplotlib = "*"
-keras = "*"
 
 [requires]
 python_version = "3.6"

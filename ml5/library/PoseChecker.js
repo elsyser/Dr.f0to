@@ -11,7 +11,9 @@ class PoseChecker{
         this.hunchedThreshold = 50;
         this.shoulderAngleThreshold = 5;
         this.headAngleThreshold = 5;
+        this.monitorDistThreshold = 20;
         this.normalESD = null;
+        this.normalEED = null;
     }
 
 
@@ -126,7 +128,14 @@ class PoseChecker{
         }
         return null;
     }
-
+    
+    getCurrentEED(){
+        if(this.isPersonAvailable()){
+            var eyes = this.getEyes();
+            return dist(eyes.left.x,eyes.left.y,eyes.right.x,eyes.right.y);
+        }
+        return null;
+    }
 
 
     isPersonAvailable(){
@@ -150,6 +159,14 @@ class PoseChecker{
             this.normalESD = dist( (eyes.left.x + eyes.right.x)/2 , (eyes.left.y + eyes.right.y)/2  ,
                          (shoulders.left.x + shoulders.right.x)/2 , (shoulders.left.y + shoulders.right.y)/2 );
         }
+    }
+
+    /**
+     * Set the normal Eye to Eye distance
+     * @param {Object} eyes - The eye object holding the positions
+     */
+    setNormalEED(eyes){
+        this.normalEED = dist(eyes.left.x,eyes.left.y,eyes.right.x,eyes.right.y);
     }
     //
 }

@@ -37,7 +37,9 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  app.dock.hide();
+  if(process.platform == "darwin")
+    app.dock.hide();
+  
   mainWindow.loadFile('./ml5/index.html');
 
   mainWindow.hide();
@@ -66,7 +68,8 @@ function createWindow() {
   mainWindow.on('close', function (e) {
     e.preventDefault();
     mainWindow.hide();
-    app.dock.hide();
+    if(process.platform == "darwin")
+      app.dock.hide();
   });
 }
 app.on('ready', createWindow);
@@ -84,7 +87,8 @@ app.on('window-all-closed', function () {
 
 const openMainWindow = function () {
   mainWindow.show();
-  app.dock.show();
+  if(process.platform == "darwin")
+    app.dock.show();
 };
 
 const quitApp = function () {

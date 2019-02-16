@@ -126,6 +126,11 @@ node_modules/
 
 # Big Data
 */**/data
+<<<<<<< HEAD
+package-lock.json
+package.json
+=======
 
 # TF Boards
 */**/boards
+>>>>>>> 424c923996dbe36679a92a3a76a871ead8a374ba
