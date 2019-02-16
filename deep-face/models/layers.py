@@ -8,7 +8,7 @@ __all__ = [
 
 
 def conv2d_layer(input_X, n_filters=3, size=[1, 1], strides=[1, 1, 1, 1], padding='VALID', dilations=[1, 1, 1, 1], name='conv2d-layer'):
-    m, n_H, n_W, n_C = input_X.shape
+    _, _, _, n_C = input_X.shape
 
     with tf.name_scope(name) as nscope:
         with tf.variable_scope(name+'-variables') as vscope:
