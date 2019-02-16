@@ -17,7 +17,7 @@
   <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
 
   <script>
-    function showPage(pageId) {
+    function showPage(pageId , target = null) {
       var pages = document.getElementsByClassName("page");
       for (var p of pages) {
         p.hidden = true;
@@ -27,10 +27,13 @@
       for(var el of document.getElementsByClassName("topnav")[0].children){
         el.className = '';
       }
+      if(target)
+        target.className = "active";
+      else
       event.target.className = "active";
     }
     window.onload = function(){
-      showPage("mentalPage");
+      showPage("physicalPage" ,document.getElementById("physical"));
     }
   </script>
 
@@ -48,9 +51,9 @@
 
   <div class="topnav">
     <!-- Line chart -->
-    <a  href="#physical" onclick="showPage('physicalPage')">Physical health</a>
+    <a  href="#physical" onclick="showPage('physicalPage')" id="physical">Physical health</a>
     <!--PIE chart -->
-    <a href="#mental" onclick="showPage('mentalPage')">Mental health</a>
+    <a href="#mental" onclick="showPage('mentalPage')" id="mental">Mental health</a>
   </div>
   <div class="chartWrapper page" id="physicalPage">
     <canvas class="chart" id="physicalChart"></canvas>
