@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 
-PATH_TO_IMAGES = '../data/fer/fer2013.csv'
+PATH_TO_IMAGES = '~/Desktop/Dr.f0to/deep-face/data/fer/fer2013.csv'
 IMG_SHAPE = (48, 48, 1)
 LABELS_MAP = {
     0: 'Angry',
