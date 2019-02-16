@@ -30,10 +30,15 @@ const video_options = {
 };
 
 function preload(){
-  createCanvas(windowWidth - 150, windowHeight);
+  var canvas = createCanvas(windowWidth, windowHeight).hidden = false;
+  document.getElementById("defaultCanvas0").hidden = true;
+
+  
+
+
   video = createCapture(video_options);
-  video.size(width, height);
-  document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
+  video.size(640, 480);
+  // document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
 
   
   video.hide();
@@ -86,7 +91,7 @@ mentalChart.updateData([10,20],["happy" , "sad"]);
 
 // var i =0;
 function draw() {
- 
+
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
     var currEED = poseNet.getCurrentEED();
@@ -103,10 +108,6 @@ function draw() {
       console.log("You're too close to the monitor");
     }
   }
-
-  var path = window.location.href , path = path.substring(path.indexOf('#') , path.length);
-  // console.log(window.location.href);
-  console.log(path);
 
 
   // poseNet.getEyes();

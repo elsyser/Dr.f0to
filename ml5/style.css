@@ -14,7 +14,10 @@
     border-radius: 25px;
 }
 
+
 .chartWrapper {
+  margin-top:1%;
+
   position: relative; 
   height: 89%; 
   width: 86%;
@@ -51,6 +54,7 @@ body {
     font-size: 14px;
     margin: 1%;
     margin-right: 0;
+    margin-bottom: 0;
   }
   
   /* Change the color of links on hover */
