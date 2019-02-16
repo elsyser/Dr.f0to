@@ -1,10 +1,8 @@
 let video;
 let poseNet;
 let isCallibrated = false;
-var chart = null;
-var config = null;
-// let poses = [];
-// let skeletons = [];
+var physicalChart = null;
+var mentalChart = null;
 
 
 const poseNet_options = {
@@ -31,55 +29,64 @@ const video_options = {
   audio: false
 };
 
-
-
-
-function setup() {
+function preload(){
   createCanvas(windowWidth - 150, windowHeight);
   video = createCapture(video_options);
   video.size(width, height);
   document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
 
-  poseNet = new PoseChecker(video, poseNet_options);
-
-  poseNet.begin();
-
+  
   video.hide();
-
-
   
-  
-  var cnv = document.getElementById("chart").getContext("2d");
-  chart  = new DataHandler(cnv , {
+  var cnvPhyical = document.getElementById("physicalChart").getContext("2d");
+  physicalChart  = new DataHandler(cnvPhyical , {
     diagramName: "ESD (Eye-Shoulder Distance)",
     xName: "Time",
     yName: "Current Eye Shoulder Distance"
   } , 'line');
 
+  var cnvMental = document.getElementById("mentalChart").getContext("2d");
+  mentalChart = new DataHandler(cnvMental , {
+    diagramName: "Mental wellbeing",
+    xName : "",
+    yName : "",
+  } , "doughnut");
+
+
+  poseNet = new PoseChecker(video, poseNet_options);
+
+  poseNet.begin();
+
+  //Setup the dataset fot the Line physicalChart
+  // 
+  physicalChart.addDataset('spine');
+  physicalChart.addDataset('head');
+  physicalChart.addDataset('shoulders');
+  physicalChart.addDataset('distance');
+  //
+
+  // mentalChart.addDataset('');
+  // mentalChart.addDataset('sad');
+}
+
+
+function setup() {
+  
   setInterval(()=>{
     var esd = poseNet.getCurrentESD();
     if(esd && isCallibrated && document.hasFocus()){
-      chart.pushData(new Date().toLocaleTimeString() , esd , "head");
+      physicalChart.pushData(new Date().toLocaleTimeString() , esd , "head");
     }
   } , 1000);
 
-
-
-  chart.addDataset('spine');
-  chart.addDataset('head');
-
+// mentalChart.updateData(20 , "sad");
+mentalChart.updateData([10,20],["happy" , "sad"]);
+  
 }
 
-var i =0;
+// var i =0;
 function draw() {
-  if(mouseIsPressed){
-    chart.pushData( i++ , random(0,10) , 'spine');
-  }
-
-  if(keyIsPressed && key=="s"){
-    chart.pushData( i++ , random(0,10) , 'head');
-  }
-
+ 
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
     var currEED = poseNet.getCurrentEED();
@@ -97,8 +104,9 @@ function draw() {
     }
   }
 
-  var path = window.location.href , path = path.slice(path.length-1 , path.length);
+  var path = window.location.href , path = path.substring(path.indexOf('#') , path.length);
   // console.log(window.location.href);
+  console.log(path);
 
 
   // poseNet.getEyes();
@@ -118,6 +126,7 @@ function handleCallibration() {
   }
 }
 
-function windowResized(){
-  resizeCanvas(window.width , window.height);
-}
+// function windowResized(){
+//   resizeCanvas(window.width , window.height);
+// }
+

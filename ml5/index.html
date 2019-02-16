@@ -16,26 +16,40 @@
 
   <link rel="stylesheet" type="text/css" href="./style.css">
 
+<script>
+  function showPage(pageId){
+  var pages = document.getElementsByClassName("page");
+  for(var p of pages){
+    p.hidden = true;
+  }
+  document.getElementById(pageId).hidden = false;
+}
+</script>
+
 </head>
 
 <body>
   
   <script src="sketch.js"></script>
   <div id="sidenav" class="sidenav">
-    <a href="#1"> <i class="fab fa-phoenix-framework"></i> Main</a>
-    <a href="#2">Health</a>
-    <a href="#3">Settings</a>
-    <a href="#4">Security</a>
+    <a href="#main"> <i class="fab fa-phoenix-framework"></i> Main</a>
+    <a href="#health">Health</a>
+    <a href="#security">Security</a>
+    <a href="#settings">Settings</a>
   </div>
 
   <div class="topnav">
-    <a class="active" href="#phys">Physical health</a>
+    <!-- Line chart -->
+    <a class="active" href="#physical">Physical health</a>
     <!--PIE chart -->
     <a href="#mental">Mental health</a>
   </div>
-  <div id="chartWrapper" style="position: relative; height: 80%; width: 85% ">
-    <canvas id="chart"></canvas>
-    </div>
+  <div class="chartWrapper page" hidden>
+    <canvas class="chart" id="physicalChart"></canvas>
+  </div>
+  <div class="chartWrapper page">
+      <canvas class="chart" id="mentalChart" ></canvas>
+  </div>
   <button id="callibratePose">Callibrate</button>
 
 </body>

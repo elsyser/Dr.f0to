@@ -3,12 +3,12 @@
     border-radius: 25px;
 }
 
-#chart{
+.chart{
     margin-left: 13%;
     border-radius: 25px;
 }
 
-#chartWrapper {
+.chartWrapper {
   /* width: 85%;
   height: 80%; */
   margin-left: 13%;
@@ -16,6 +16,7 @@
   border-radius: 25px;
   overflow: hidden;
      -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); /* this fixes the overflow:hidden in Chrome/Opera */
+     position: relative; height: 80%; width: 85%
 }
 body {
   padding: 0; 
