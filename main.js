@@ -1,11 +1,19 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const {
+  app,
+  Menu,
+  Tray,
+  BrowserWindow,
+  Notification
+} = require('electron');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let appIcon = null;
 
-function createWindow () {
+function createWindow() {
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -14,9 +22,34 @@ function createWindow () {
       nodeIntegration: true
     }
   });
+  mainWindow.hide();
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('./ml5/index.html');
+  appIcon = new Tray("./assets/elsys_logo.png");
+  const contextMenu = Menu.buildFromTemplate([{
+      label: 'Open Dr.F0to',
+      type: 'normal',
+      click(){
+        // and load the index.html of the app.
+        mainWindow.loadFile('./ml5/index.html');
+        mainWindow.show();
+      }
+    },
+    {
+      label: 'Item2',
+      type: 'radio'
+    }
+  ]);
+
+  appIcon.on('click', function () {
+    appIcon.popUpContextMenu(contextMenu);
+    // let myNotification = new Notification({
+    //   title: "Test",
+    //   body: 'Lorem Ipsum Dolor Sit Amet'
+    // }).show();  
+  });
+
+
+  
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -26,13 +59,13 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    mainWindow = null;
   });
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+// // This method will be called when Electron has finished
+// // initialization and is ready to create browser windows.
+// // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
@@ -42,24 +75,15 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-})
+});
 
-app.on('activate', function () {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
-})
+// app.on('activate', function () {
+//   // On macOS it's common to re-create a window in the app when the
+//   // dock icon is clicked and there are no other windows open.
+//   if (mainWindow === null) {
+//     createWindow();
+//   }
+// });
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
-
-// var express = require('express')
-// var app = express()
-
-// var server = app.listen(3000);
-
-// app.use('/' , express.static("./ml5"));
-
