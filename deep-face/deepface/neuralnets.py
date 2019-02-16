@@ -20,6 +20,9 @@ __all__ = [
 
 
 class DFSystem:
+    """Deep-Face System
+    """
+
     def __init__(self):
         self.model = None
 

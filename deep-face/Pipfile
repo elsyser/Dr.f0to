@@ -12,6 +12,8 @@ numpy = "*"
 tensorflow = "*"
 pandas = "*"
 matplotlib = "*"
+emopy = "*"
+flask = "*"
 
 [requires]
 python_version = "3.6"
