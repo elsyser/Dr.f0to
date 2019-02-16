@@ -59,11 +59,14 @@ function setup() {
   setInterval(()=>{
     var esd = poseNet.getCurrentESD();
     if(esd && isCallibrated && document.hasFocus()){
-      chart.pushData(new Date().toLocaleTimeString() , esd);
+      chart.pushData(new Date().toLocaleTimeString() , esd , "head");
     }
   } , 1000);
-  chart.addDataset(123 , 'spine');
-  chart.addDataset(123 , 'head');
+
+
+
+  chart.addDataset('spine');
+  chart.addDataset('head');
 
 }
 
@@ -73,7 +76,7 @@ function draw() {
     chart.pushData( i++ , random(0,10) , 'spine');
   }
 
-  if(keyIsPressed){
+  if(keyIsPressed && key=="s"){
     chart.pushData( i++ , random(0,10) , 'head');
   }
 

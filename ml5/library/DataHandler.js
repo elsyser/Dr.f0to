@@ -16,9 +16,9 @@ class DataHandler{
      * @param {Object} nameOptions - Object containing the specific names(options.diagramName , options.xName , options.yName)
      * @param {String} type - The type of diagram (line , pie and etc.)
      */
-    constructor(canvas , nameOptions , type){
+    constructor(canvas , nameOptions){
         this.config = {
-            type: type,
+            type: "line",
             data: {
               labels: [0],
               datasets: [{
