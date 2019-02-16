@@ -7,14 +7,16 @@ class PoseChecker{
         // this.poses = [];
         this.options = options;
         this.source = source;
-        this.isModelLoaded = false;
+        this.isLoaded = false;
+        this.threshold = 80;
+        this.normalESD = null;
     }
 
 
     begin(){
         this.poseNet = ml5.poseNet(this.source, this.options , ()=>{
             console.log("LOADED");
-            this.isModelLoaded = true;
+            this.isLoaded = true;
         });
         this.poseNet.on('pose', function (results) {
             poses = results;
@@ -22,7 +24,7 @@ class PoseChecker{
     }
 
     update(){
-        this.drawKeypoints();
+        // this.drawKeypoints();
     }
 
     drawKeypoints()  {
@@ -43,38 +45,80 @@ class PoseChecker{
         }
     }
 
+    //Getters
     getEyes(){
-        var toReturn = {
-            left:null,
-            right:null
-        };
-        if(this.isModelLoaded && poses[0]){
-            var keypoints = poses[0].pose.keypoints;
-            for(var i=0;i<keypoints.length;i++){
-                var keypoint = keypoints[i];
-                if(keypoint.part == 'leftEye'){
-                    toReturn.left = keypoint.position; 
-                }else if(keypoint.part == 'rightEye')
-                    toReturn.right = keypoint.position;
+        if(this.isPersonAvailable()){
+            var toReturn = {
+                left:null,
+                right:null
+            };
+            if(this.isLoaded && poses[0]){
+                var keypoints = poses[0].pose.keypoints;
+                for(var i=0;i<keypoints.length;i++){
+                    var keypoint = keypoints[i];
+                    if(keypoint.part == 'leftEye'){
+                        toReturn.left = keypoint.position; 
+                    }else if(keypoint.part == 'rightEye')
+                        toReturn.right = keypoint.position;
+                }
             }
+            return toReturn;
         }
-        return toReturn;
     }
-    getShoulder(){
-        var toReturn = {
-            left:null,
-            right:null
-        };
-        if(this.isModelLoaded && poses[0]){
-            var keypoints = poses[0].pose.keypoints;
-            for(var i=0;i<keypoints.length;i++){
-                var keypoint = keypoints[i];
-                if(keypoint.part == 'rightShoulder'){
-                    toReturn.left = keypoint.position; 
-                }else if(keypoint.part == 'leftShoulder')
-                    toReturn.right = keypoint.position;
+    getShoulders(){
+        if(this.isPersonAvailable()){
+            var toReturn = {
+                left:null,
+                right:null
+            };
+            if(this.isLoaded && poses[0]){
+                var keypoints = poses[0].pose.keypoints;
+                for(var i=0;i<keypoints.length;i++){
+                    var keypoint = keypoints[i];
+                    if(keypoint.part == 'rightShoulder'){
+                        toReturn.left = keypoint.position; 
+                    }else if(keypoint.part == 'leftShoulder')
+                        toReturn.right = keypoint.position;
+                }
             }
+            return toReturn;
         }
-        return toReturn;
     }
+    /**
+     * Get the current Eye - Shoulder distance (ESD)
+     * @returns {Int} The distance
+     */
+    getCurrentESD(){
+        if(this.isPersonAvailable()){
+            var shoulders = this.getShoulders();
+            var eyes = this.getEyes();
+            return dist( (eyes.left.x + eyes.right.x)/2 , (eyes.left.y + eyes.right.y)/2  ,
+            (shoulders.left.x + shoulders.right.x)/2 , (shoulders.left.y + shoulders.right.y)/2 );
+        }
+    }
+
+
+    isPersonAvailable(){
+        return (poses.length) ? true : false;
+    }
+
+    //TODO 
+    //Make scale factor measured by the distance between the TWO eyes
+    //
+    //
+
+
+    //Setters
+    /**
+     * Set the normal Eye - Shoulder distance (ESD)
+     * @param {Object} eyes - The eye object holding the positions
+     * @param {Objct} shoulders - The shoulder object holding the positions
+     */
+    setNormalESD(eyes , shoulders){
+        if(this.isPersonAvailable()){
+            this.normalESD = dist( (eyes.left.x + eyes.right.x)/2 , (eyes.left.y + eyes.right.y)/2  ,
+                         (shoulders.left.x + shoulders.right.x)/2 , (shoulders.left.y + shoulders.right.y)/2 );
+        }
+    }
+    //
 }
