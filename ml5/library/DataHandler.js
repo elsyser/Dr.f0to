@@ -1,14 +1,24 @@
+
+/**
+ * Const for colorNames
+ */
 colorNames = {
     spine: "rgba(100, 50, 132, 1)",
-    head: "rgba(100, 50, 132, 1)",
+    head: "rgba(100, 200, 132, 1)",
     shoulders: "rgba(100, 50, 132, 1)",
     distance: "rgba(100, 50, 132, 1)",
 };
 
 class DataHandler{
-    constructor(canvas , nameOptions){
+    /**
+     * 
+     * @param {Canvas} canvas - the canvas DOM element to put the Histogram
+     * @param {Object} nameOptions - Object containing the specific names(options.diagramName , options.xName , options.yName)
+     * @param {String} type - The type of diagram (line , pie and etc.)
+     */
+    constructor(canvas , nameOptions , type){
         this.config = {
-            type: 'line',
+            type: type,
             data: {
               labels: [0],
               datasets: [{
@@ -61,18 +71,29 @@ class DataHandler{
     begin(){
     }
 
+    /**
+     * This function adds the passed data to the specific type of dataset
+     * @param {Int} x - x coord for the data vertex
+     * @param {Int} y - y coord for the data vertex
+     * @param {String} type - Which dataset to put the data in
+     */
     pushData(x , y , type){
         this.config.data.labels.push(x);
         var obj = this.config.data.datasets.filter((obj) =>{
-            return obj.label == type;
+            if(obj.label == type){
+                obj.data.push(y)
+                console.log(obj);
+                return obj;
+            }
         });
-        console.log(obj.data);
-        // obj.data.push(y);
-        // this.config.data.datasets[type].dataset.data.push(y);
         this.chart.update();
     }
 
-    addDataset(data , type){
+    /**
+     * This function is for creating a new dataset
+     * @param {String} type - the of dataset (ex. spine, head , shoulder , distance) 
+     */
+    addDataset(type){
 		var colorName = colorNames[type];
 			var newDataset = {
 				label: type,
@@ -81,12 +102,6 @@ class DataHandler{
 				data: [],
 				fill: false
 			};
-
-			for (var index = 0; index < this.config.data.labels.length; ++index) {
-                newDataset.data.push(random(0,20));
-                console.log("KUREC")
-			}
-
 			this.config.data.datasets.push(newDataset);
 			this.chart.update();
     }
