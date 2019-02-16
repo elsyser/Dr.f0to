@@ -54,23 +54,31 @@ function setup() {
     diagramName: "ESD (Eye-Shoulder Distance)",
     xName: "Time",
     yName: "Current Eye Shoulder Distance"
-  });
+  } , 'line');
 
   setInterval(()=>{
     var esd = poseNet.getCurrentESD();
     if(esd && isCallibrated && document.hasFocus()){
-      chart.pushData(new Date().toLocaleTimeString() , esd);
+      chart.pushData(new Date().toLocaleTimeString() , esd , "head");
     }
   } , 1000);
-  chart.addDataset([123,43,123,55] , 'spine');
+
+
+
+  chart.addDataset('spine');
+  chart.addDataset('head');
 
 }
 
+var i =0;
 function draw() {
   if(mouseIsPressed){
-    chart.pushData([1,2,3,4] , [123,43,123,55] , 'spine');
+    chart.pushData( i++ , random(0,10) , 'spine');
   }
 
+  if(keyIsPressed && key=="s"){
+    chart.pushData( i++ , random(0,10) , 'head');
+  }
 
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
