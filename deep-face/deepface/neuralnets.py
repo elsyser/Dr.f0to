@@ -1,15 +1,16 @@
 import json
-from . import dataloader
 
-from keras.applications.inception_v3 import InceptionV3
-from keras.applications.resnet50 import ResNet50
-from keras.applications.vgg16 import VGG16
-from keras.applications.vgg19 import VGG19
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from keras.layers import (BatchNormalization, Conv2D, Dense, Dropout, Flatten,
+from tensorflow.keras.applications.inception_v3 import InceptionV3
+from tensorflow.keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.vgg19 import VGG19
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.layers import (BatchNormalization, Conv2D, Dense, Dropout, Flatten,
                           GlobalAveragePooling2D, MaxPooling2D)
-from keras.models import Model, Sequential
-from keras.utils import plot_model
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.utils import plot_model
+
+from . import dataloader
 
 __all__ = [
     'DFNeuralNet',
@@ -58,17 +59,7 @@ class TransferLearningNN(DFNeuralNet):
         self._init_model()
 
     def _init_model(self):
-        base_model = self._get_base_model()
-        for layer in base_model.layers:
-            layer.trainable = False
-
-        top_layer_model = base_model.output
-        top_layer_model = GlobalAveragePooling2D()(top_layer_model)
-        top_layer_model = Dense(1024, activation='relu')(top_layer_model)
-        prediction_layer = Dense(len(dataloader.LABELS_MAP.values()), activation='softmax')(top_layer_model)
-
-        self.model = Model(input=base_model.input, output=prediction_layer)
-        print(self.model.summary())
+        pass
 
     def _get_base_model(self):
         if self.model_name == 'inception_v3':
