@@ -1,11 +1,13 @@
 let video;
 let poseNet;
 let isCallibrated = false;
+var chart = null;
+var config = null;
 // let poses = [];
 // let skeletons = [];
 
 
-const poseNet_options = { 
+const poseNet_options = {
   imageScaleFactor: 0.2,
   outputStride: 16,
   flipHorizontal: false,
@@ -15,50 +17,64 @@ const poseNet_options = {
   nmsRadius: 20,
   detectionType: 'single',
   multiplier: 0.75,
- };
- const video_options = {
+};
+const video_options = {
   video: {
     mandatory: {
       minWidth: 640,
       minHeight: 480
     },
-    optional: [{ 
-      maxFrameRate: 3 ,
+    optional: [{
+      maxFrameRate: 20,
     }]
   },
   audio: false
 };
- 
+
+
+
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(windowWidth, windowHeight);
   video = createCapture(video_options);
   video.size(width, height);
-  document.getElementById("callibratePose").addEventListener('click', handleCallibration , false);
+  document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
 
-  poseNet = new PoseChecker(video , poseNet_options);
+  poseNet = new PoseChecker(video, poseNet_options);
 
   poseNet.begin();
 
   video.hide();
 
+
+  
+  
+  var cnv = document.getElementById("defaultCanvas0").getContext("2d");
+  chart  = new DataHandler(cnv , {
+    diagramName: "ESD (Eye-Shoulder Distance)",
+    xName: "Time",
+    yName: "Current Eye Shoulder Distance"
+  });
+
+  setInterval(()=>{
+    var esd = poseNet.getCurrentESD();
+    if(esd && isCallibrated && document.hasFocus()){
+      chart.pushData(new Date().toLocaleTimeString() , esd);
+    }
+  } , 1000);
+
 }
 
 function draw() {
-  image(video, 0, 0, width, height);
-
-  var shoulders = poseNet.getShoulders();
-
-
-  if(isCallibrated){
+  if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
-    if(abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()){
+    if (abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()) {
       console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
     }
-    if(abs(abs(poseNet.getShoulderAngle())-180)>poseNet.shoulderAngleThreshold && poseNet.getShoulderAngle() != null){
+    if (abs(abs(poseNet.getShoulderAngle()) - 180) > poseNet.shoulderAngleThreshold && poseNet.getShoulderAngle() != null) {
       console.log("RAMENETE WE");
     }
-    if(abs(poseNet.getHeadAngle())>poseNet.headAngleThreshold){
+    if (abs(poseNet.getHeadAngle()) > poseNet.headAngleThreshold) {
       console.log("Izprai si glawata wee");
     }
   }
@@ -68,13 +84,13 @@ function draw() {
 
 }
 
-function handleCallibration(){
-    if(poseNet.isLoaded){
-      var shoulders = poseNet.getShoulders();
-      var eyes = poseNet.getEyes();
-      poseNet.setNormalESD(eyes , shoulders);
-      isCallibrated = true;
-      console.log("Callibrated dist:" , poseNet.normalESD);
+function handleCallibration() {
+  if (poseNet.isLoaded) {
+    var shoulders = poseNet.getShoulders();
+    var eyes = poseNet.getEyes();
+    poseNet.setNormalESD(eyes, shoulders);
+    isCallibrated = true;
+    console.log("Callibrated dist:", poseNet.normalESD);
 
-    }
+  }
 }
