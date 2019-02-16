@@ -1,5 +1,3 @@
-
-
 <html>
 
 <head>
@@ -12,31 +10,59 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
   <script src="./library/DataHandler.js"></script>
   <script src="./library/PoseChecker.js"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
 
   <link rel="stylesheet" type="text/css" href="./style.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
+
+  <script>
+    function showPage(pageId , target = null) {
+      var pages = document.getElementsByClassName("page");
+      for (var p of pages) {
+        p.hidden = true;
+      }
+      document.getElementById(pageId).hidden = false;
+      
+      for(var el of document.getElementsByClassName("topnav")[0].children){
+        el.className = '';
+      }
+      if(target)
+        target.className = "active";
+      else
+      event.target.className = "active";
+    }
+    window.onload = function(){
+      showPage("physicalPage" ,document.getElementById("physical"));
+    }
+  </script>
 
 </head>
 
 <body>
-  
+
   <script src="sketch.js"></script>
   <div id="sidenav" class="sidenav">
-    <a href="#1"> <i class="fab fa-phoenix-framework"></i> Main</a>
-    <a href="#2">Health</a>
-    <a href="#3">Settings</a>
-    <a href="#4">Security</a>
+    <a href="#main"> <i class="fab fa-phoenix-framework"></i> Main</a>
+    <a href="#health">Health</a>
+    <a href="#security">Security</a>
+    <a href="#settings">Settings</a>
   </div>
 
   <div class="topnav">
-    <a class="active" href="#phys">Physical health</a>
+    <!-- Line chart -->
+    <a  href="#physical" onclick="showPage('physicalPage')" id="physical">Physical health</a>
     <!--PIE chart -->
-    <a href="#mental">Mental health</a>
+    <a href="#mental" onclick="showPage('mentalPage')" id="mental">Mental health</a>
   </div>
-  <div id="chartWrapper" style="position: relative; height: 80%; width: 85% ">
-    <canvas id="chart"></canvas>
-    </div>
+  <div class="chartWrapper page" id="physicalPage">
+    <canvas class="chart" id="physicalChart"></canvas>
   <button id="callibratePose">Callibrate</button>
+
+  </div>
+  <div class="chartWrapper page" id="mentalPage">
+    <canvas class="chart" id="mentalChart"></canvas>
+  </div>
 
 </body>
 

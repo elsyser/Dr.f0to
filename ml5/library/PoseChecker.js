@@ -3,8 +3,7 @@ let poses = [];
 
 class PoseChecker{ 
     constructor(source , options){
-        this.poseNet ;
-        // this.poses = [];
+        this.poseNet;
         this.options = options;
         this.source = source;
         this.isLoaded = false;
@@ -103,7 +102,7 @@ class PoseChecker{
 
     /**
      * Get the shoulder angle
-     * @returns {Float} The angle
+     * @returns {Float} The angle (Default angle is 0)
      */
     getShoulderAngle(){
         if(this.isPersonAvailable()){
@@ -117,7 +116,7 @@ class PoseChecker{
 
     /**
      * Get the head angle
-     * @returns {Float} The angle
+     * @returns {Float} The angle (Default angle is 180)
      */
     getHeadAngle(){
         if(this.isPersonAvailable()){
