@@ -9,10 +9,14 @@ const {
 
 const express = require('express')();
 var wifi = require('node-wifi');
+const fetch = require('node-fetch');
+const image2base64 = require('image-to-base64');
 
 wifi.init({
   iface: null // network interface, choose a random wifi interface if set to null
 });
+
+//Viktor's IP: 172.16.191.205:5000/
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -37,12 +41,37 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  if(process.platform == "darwin")
+  if (process.platform == "darwin")
     app.dock.hide();
-  
+
   mainWindow.loadFile('./ml5/index.html');
 
   mainWindow.hide();
+
+
+  image2base64("./assets/Happy-Boy.jpg") // you can also to use url
+    .then(
+      (response) => {
+        console.log(response); //cGF0aC90by9maWxlLmpwZw==
+        const body = {
+          img: response
+        };
+        fetch('http://172.16.191.205:5000/', {
+            method: 'POST',
+            body: JSON.stringify(body),
+          })
+          .then(res => res.json())
+          .then(json => console.log(json));
+      }
+    )
+    .catch(
+      (error) => {
+        console.log(error); //Exepection error....
+      }
+    )
+
+
+
 
   appIcon = new Tray("./assets/elsys_logo.png");
   const contextMenu = Menu.buildFromTemplate([{
@@ -62,13 +91,13 @@ function createWindow() {
   ]);
 
   appIcon.on('click', function () {
-    appIcon.popUpContextMenu(contextMenu); 
+    appIcon.popUpContextMenu(contextMenu);
   });
 
   mainWindow.on('close', function (e) {
     e.preventDefault();
     mainWindow.hide();
-    if(process.platform == "darwin")
+    if (process.platform == "darwin")
       app.dock.hide();
   });
 }
@@ -87,7 +116,7 @@ app.on('window-all-closed', function () {
 
 const openMainWindow = function () {
   mainWindow.show();
-  if(process.platform == "darwin")
+  if (process.platform == "darwin")
     app.dock.show();
 };
 
