@@ -126,3 +126,5 @@ node_modules/
 
 # Big Data
 */**/data
+package-lock.json
+package.json
