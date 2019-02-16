@@ -22,6 +22,9 @@ function createWindow() {
       nodeIntegration: true
     }
   });
+  app.dock.hide();
+  mainWindow.loadFile('./ml5/index.html');
+
   mainWindow.hide();
 
   appIcon = new Tray("./assets/elsys_logo.png");
@@ -29,14 +32,15 @@ function createWindow() {
       label: 'Open Dr.F0to',
       type: 'normal',
       click(){
-        // and load the index.html of the app.
-        mainWindow.loadFile('./ml5/index.html');
-        mainWindow.show();
+        openMainWindow();
       }
     },
     {
-      label: 'Item2',
-      type: 'radio'
+      label: 'Quit',
+      type: 'normal',
+      click(){
+        quitApp();
+      }
     }
   ]);
 
@@ -49,17 +53,18 @@ function createWindow() {
   });
 
 
-  
-
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  mainWindow.on('close', function (e) {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null;
+    // mainWindow = null;
+    e.preventDefault();
+    mainWindow.hide();
+    app.dock.hide();
   });
 }
 
@@ -73,9 +78,22 @@ app.on('window-all-closed', function () {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    app.quit();
+    // app.quit();
   }
 });
+
+
+
+const openMainWindow = function(){
+  mainWindow.show();
+  app.dock.show();
+};
+
+const quitApp = function(){
+  mainWindow = null;
+  app.exit();
+  app.quit();
+};
 
 // app.on('activate', function () {
 //   // On macOS it's common to re-create a window in the app when the
