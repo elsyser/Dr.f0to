@@ -1,13 +1,14 @@
 import json
 
+from tensorflow.keras import optimizers
+from tensorflow.keras.applications.inception_resnet_v2 import InceptionResNetV2
 from tensorflow.keras.applications.inception_v3 import InceptionV3
 from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg19 import VGG19
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.layers import (BatchNormalization, Conv2D, Dense, Dropout, Flatten,
-                          GlobalAveragePooling2D, MaxPooling2D)
-from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.layers import Conv2D, Dense, Flatten, Input
+from tensorflow.keras.models import Model
 from tensorflow.keras.utils import plot_model
 
 from . import dataloader
@@ -59,11 +60,28 @@ class TransferLearningNN(DFNeuralNet):
         self._init_model()
 
     def _init_model(self):
-        pass
+        # Input
+        X_input = Input(shape=dataloader.IMG_SHAPE)
+        
+        # Reshape with convolution to (h, w, 3)
+        X = Conv2D(3, kernel_size=[1, 1], strides=[1, 1], padding='SAME', activation='relu')(X_input)
+        
+        # Inception-Resnet
+        base_model = self._get_base_model()
+        X = base_model(X)
+        
+        X = Flatten()(X)
+        X = Dense(units=2048, activation='relu')(X)
+        Y = Dense(units=len(dataloader.LABELS_MAP.values()), activation='softmax')(X)
+        
+        self.model = Model(inputs=X_input, outputs=Y)
+        return self.model
 
     def _get_base_model(self):
         if self.model_name == 'inception_v3':
             return InceptionV3(weights='imagenet', include_top=False)
+        elif self.model_name == 'inception_resnet_v2':
+            return InceptionResNetV2(weights='imagenet', include_top=False)
         elif self.model_name == 'vgg16':
             return VGG16(weights='imagenet', include_top=False)
         elif self.model_name == 'vgg19':
@@ -76,7 +94,9 @@ class TransferLearningNN(DFNeuralNet):
     def fit(self, x, y, epochs=50):
         """Fine tuning
         """
-
+        
+        for layer in self.model.layers[:self.num_bottom_layers_to_keep]:
+            layer.trainable = False
         for layer in self.model.layers[self.num_bottom_layers_to_keep:]:
             layer.trainable = True
 
