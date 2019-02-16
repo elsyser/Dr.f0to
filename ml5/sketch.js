@@ -68,6 +68,7 @@ function setup() {
 function draw() {
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
+    var currEED = poseNet.getCurrentEED();
     if (abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()) {
       console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
     }
@@ -76,6 +77,9 @@ function draw() {
     }
     if (abs(poseNet.getHeadAngle()) > poseNet.headAngleThreshold) {
       console.log("Izprai si glawata wee");
+    }
+    if ((currEED - poseNet.normalEED) > poseNet.monitorDistThreshold && poseNet.isPersonAvailable()) {
+      console.log("You're too close to the monitor");
     }
   }
 
@@ -90,6 +94,7 @@ function handleCallibration() {
     var eyes = poseNet.getEyes();
     poseNet.setNormalESD(eyes, shoulders);
     isCallibrated = true;
+    poseNet.setNormalEED(eyes);
     console.log("Callibrated dist:", poseNet.normalESD);
 
   }

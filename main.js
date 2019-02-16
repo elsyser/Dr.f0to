@@ -8,6 +8,12 @@ const {
 } = require('electron');
 
 const express = require('express')();
+var wifi = require('node-wifi');
+
+wifi.init({
+  iface: null // network interface, choose a random wifi interface if set to null
+});
+
 
 
 
@@ -18,7 +24,7 @@ let appIcon = null;
 
 function createWindow() {
 
-  express.listen(6969 , ()=>{
+  express.listen(6969, () => {
     console.log("Express is listening");
   });
 
@@ -33,7 +39,9 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  app.dock.hide();
+  if(process.platform == "darwin")
+    app.dock.hide();
+  
   mainWindow.loadFile('./ml5/index.html');
 
   mainWindow.hide();
@@ -42,14 +50,15 @@ function createWindow() {
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Open Dr.F0to',
       type: 'normal',
-      click(){
+      click() {
         openMainWindow();
+        getCurrentConnections();
       }
     },
     {
       label: 'Quit',
       type: 'normal',
-      click(){
+      click() {
         quitApp();
       }
     }
@@ -75,7 +84,8 @@ function createWindow() {
     // mainWindow = null;
     e.preventDefault();
     mainWindow.hide();
-    app.dock.hide();
+    if(process.platform == "darwin")
+      app.dock.hide();
   });
 }
 
@@ -95,21 +105,29 @@ app.on('window-all-closed', function () {
 
 
 
-const openMainWindow = function(){
+const openMainWindow = function () {
   mainWindow.show();
-  app.dock.show();
+  if(process.platform == "darwin")
+    app.dock.show();
 };
 
-const quitApp = function(){
+const quitApp = function () {
   mainWindow = null;
   app.exit();
   app.quit();
 };
 
 
-express.get("/hello" , (req , res)=>{
-
+express.get("/networkConnections", (req, res) => {
+  // List the current wifi connections
+  wifi.getCurrentConnections(function (err, currentConnections) {
+    if (err) {
+      console.log(err);
+    }
+    res.send(currentConnections);
+  });
 });
+
 
 // app.on('activate', function () {
 //   // On macOS it's common to re-create a window in the app when the
