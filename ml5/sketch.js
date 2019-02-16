@@ -40,8 +40,15 @@ function draw() {
 
   if(isCallibrated){
     var currESD = poseNet.getCurrentESD();
-    if(abs(currESD - poseNet.normalESD) > poseNet.threshold && poseNet.isPersonAvailable())
+    if(abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()){
       console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
+    }
+    if(abs(abs(poseNet.getShoulderAngle())-180)>poseNet.shoulderAngleThreshold && poseNet.getShoulderAngle() != null){
+      console.log("RAMENETE WE");
+    }
+    if(abs(poseNet.getHeadAngle())>poseNet.headAngleThreshold){
+      console.log("Izprai si glawata wee");
+    }
   }
 
   // poseNet.getEyes();
