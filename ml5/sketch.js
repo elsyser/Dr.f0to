@@ -35,7 +35,7 @@ const video_options = {
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 150, windowHeight);
   video = createCapture(video_options);
   video.size(width, height);
   document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
@@ -49,23 +49,37 @@ function setup() {
 
   
   
-  var cnv = document.getElementById("defaultCanvas0").getContext("2d");
+  var cnv = document.getElementById("chart").getContext("2d");
   chart  = new DataHandler(cnv , {
     diagramName: "ESD (Eye-Shoulder Distance)",
     xName: "Time",
     yName: "Current Eye Shoulder Distance"
-  });
+  } , 'line');
 
   setInterval(()=>{
     var esd = poseNet.getCurrentESD();
     if(esd && isCallibrated && document.hasFocus()){
-      chart.pushData(new Date().toLocaleTimeString() , esd);
+      chart.pushData(new Date().toLocaleTimeString() , esd , "head");
     }
   } , 1000);
 
+
+
+  chart.addDataset('spine');
+  chart.addDataset('head');
+
 }
 
+var i =0;
 function draw() {
+  if(mouseIsPressed){
+    chart.pushData( i++ , random(0,10) , 'spine');
+  }
+
+  if(keyIsPressed && key=="s"){
+    chart.pushData( i++ , random(0,10) , 'head');
+  }
+
   if (isCallibrated) {
     var currESD = poseNet.getCurrentESD();
     var currEED = poseNet.getCurrentEED();
@@ -83,6 +97,10 @@ function draw() {
     }
   }
 
+  var path = window.location.href , path = path.slice(path.length-1 , path.length);
+  // console.log(window.location.href);
+
+
   // poseNet.getEyes();
   poseNet.update();
 
@@ -98,4 +116,8 @@ function handleCallibration() {
     console.log("Callibrated dist:", poseNet.normalESD);
 
   }
+}
+
+function windowResized(){
+  resizeCanvas(window.width , window.height);
 }
