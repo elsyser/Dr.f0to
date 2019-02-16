@@ -123,3 +123,6 @@ node_modules/
 
 # VS Code
 .vscode
+
+# Big Data
+*/**/data
