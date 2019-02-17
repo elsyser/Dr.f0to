@@ -116,6 +116,7 @@ function setup() {
       // imgToSend.size(48,48);
       imgToSend.loadPixels();
       var baseString = imgToSend.canvas.toDataURL();
+      var emotions = null;
       postData('http://172.16.191.205:5000/' , {img: baseString})
       .then(data => console.log(data)) // JSON-string from `response.json()` call
       .catch(error => console.error(error));
