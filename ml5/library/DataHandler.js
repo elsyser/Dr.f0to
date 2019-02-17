@@ -26,6 +26,9 @@ class DataHandler {
                 datasets: []
             },
             options: {
+                animation:{
+                    duration: 500
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 title: {
@@ -109,6 +112,7 @@ class DataHandler {
      * @param {*} type - Which dataset to update
      */
     updateData(vals, types) {
+
         // this.config.data.labels.push(type);
         var newDataset = {
             data:vals,
@@ -116,6 +120,10 @@ class DataHandler {
                 "rgba(100, 50, 132, 1)",
                 "rgba(100, 200, 132, 1)",
                 "rgba(66, 134, 244 , 1)",
+                "rgba(66, 154, 90 , 1)",
+                "rgba(122, 136, 24 , 1)",
+                "rgba(189, 27, 83 , 1)",
+                "rgba(199, 194, 133 , 1)",
             ],
         };
         var _l = {
@@ -123,6 +131,7 @@ class DataHandler {
         }
         this.config.data.datasets[0] = newDataset;
         this.config.data.labels = types;       
+        this.config.options.animation.duration = 0;
         this.chart.update();
     }
 }

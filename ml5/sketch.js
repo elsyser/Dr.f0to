@@ -31,14 +31,14 @@ const video_options = {
 };
 
 var emotionsAverage = {
-  happy:0,
-  sad:0,
-  angry:0,
-  disgust:0,
-  fear:0,
+  happy: 0,
+  sad: 0,
+  angry: 0,
+  disgust: 0,
+  fear: 0,
   surprise: 0,
   neutral: 0,
-  counter:0
+  counter: 0
 };
 
 
@@ -88,18 +88,18 @@ function preload() {
 function postData(url = ``, data = {}) {
   // Default options are marked with *
   return fetch(url, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, cors, *same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // "Content-Type": "application/x-www-form-urlencoded",
-      },
-      redirect: "follow", // manual, *follow, error
-      referrer: "no-referrer", // no-referrer, *client
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-    })
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, cors, *same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // "Content-Type": "application/x-www-form-urlencoded",
+    },
+    redirect: "follow", // manual, *follow, error
+    referrer: "no-referrer", // no-referrer, *client
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  })
     .then(response => response.json()); // parses response to JSON
 }
 
@@ -129,12 +129,14 @@ function setup() {
       var baseString = imgToSend.canvas.toDataURL();
       var emotions = null;
       postData('http://172.16.191.205:5000/', {
-          img: baseString
-        })
+        img: baseString
+      })
         .then(data => {
           // console.log(data);
           emotions = data.res.emotions;
           toAvarage(emotions);
+          mentalChart.updateData([emotionsAverage.happy , emotionsAverage.sad , emotionsAverage.angry , emotionsAverage.surprise , emotionsAverage.neutral , emotionsAverage.disgust], 
+                                ["Happy" , "Sad" , "Angry" , "Surprise" , "Neutral" , "Disgust"]);
           // mentalChart.updateData([parseFloat(emotions.happy) , parseFloat(emotions.sad) , parseFloat(emotions.angry) , parseFloat(emotions.fear) , parseFloat(emotions.neutral) , emotions.disgust],
           //   ["Happy" , "Sad" , "Angry" , "Fear" , "Neutral" , "Disgust"]);
         }) // JSON-string from `response.json()` call
@@ -193,30 +195,31 @@ function handleCallibration() {
 //   resizeCanvas(window.width , window.height);
 // }
 
-function toAvarage(emotions){
-  emotionsAverage.counter++;
-  emotionsAverage.happy += parseFloat(emotions.happy);
-  emotionsAverage.happy/=emotionsAverage.counter;
+function toAvarage(emotions) {
+  // emotionsAverage.counter++;
+  const b = 0.90
 
-  emotionsAverage.sad += parseFloat(emotions.sad);
-  emotionsAverage.sad/=emotionsAverage.counter;
+  emotionsAverage.happy = b * emotionsAverage.happy + (1 - b) * parseFloat(emotions.happy);
+  emotionsAverage.sad = b * emotionsAverage.sad + (1 - b) * parseFloat(emotions.sad);
+  emotionsAverage.angry = b * emotionsAverage.angry + (1 - b) * parseFloat(emotions.angry);
+  emotionsAverage.disgust = b * emotionsAverage.disgust + (1 - b) * parseFloat(emotions.disgust);
+  emotionsAverage.fear = b * emotionsAverage.fear + (1 - b) * parseFloat(emotions.fear);
+  emotionsAverage.neutral = b * emotionsAverage.neutral + (1 - b) * parseFloat(emotions.neutral);
+  emotionsAverage.surprise = b * emotionsAverage.surprise + (1 - b) * parseFloat(emotions.surprise);  
 
-  emotionsAverage.angry += parseFloat(emotions.angry);
-  emotionsAverage.angry/=emotionsAverage.counter;
+  let sum = 0;
+  for (var val of Object.values(emotionsAverage))
+    sum += val
 
-  emotionsAverage.fear += parseFloat(emotions.fear);
-  emotionsAverage.fear/=emotionsAverage.counter;
-
-  emotionsAverage.neutral += parseFloat(emotions.neutral);
-  emotionsAverage.neutral/=emotionsAverage.counter;
-
-  emotionsAverage.disgust += parseFloat(emotions.disgust);
-  emotionsAverage.disgust/=emotionsAverage.counter;
-
-  emotionsAverage.surprise += parseFloat(emotions.surprise);
-  emotionsAverage.surprise/=emotionsAverage.counter;
+  emotionsAverage.happy /= sum
+  emotionsAverage.sad /= sum
+  emotionsAverage.angry /= sum
+  emotionsAverage.disgust /= sum
+  emotionsAverage.fear /= sum
+  emotionsAverage.neutral /= sum
+  emotionsAverage.surprise /= sum
 
   // console.log("-----");
 
-  console.log(emotionsAverage , emotionsAverage.counter);
+  console.log(emotionsAverage);
 }
