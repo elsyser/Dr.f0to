@@ -90,12 +90,19 @@ function setup() {
     if(isCallibrated && document.hasFocus()){
     // if(isCallibrated){
       var currDate = new Date().toLocaleTimeString();
-      physicalChart.pushData(currDate , poseNet.getCurrentESD() , "spine");
-      physicalChart.pushData(null , poseNet.getCurrentEED(), "distance");
-      physicalChart.pushData(null , poseNet.getHeadAngle(), "head");
-      physicalChart.pushData(null , poseNet.getShoulderAngle(), "shoulders");
+      var esdCorrected=-(constrain(poseNet.normalESD/poseNet.getCurrentESD(),0,1)-1);
+      physicalChart.pushData(currDate , esdCorrected , "spine");
+
+      var eedCorrected=-(constrain(poseNet.normalEED/poseNet.getCurrentEED(),0,1)-1);
+      physicalChart.pushData(null , eedCorrected, "distance"); 
+
+      var headDataCorrected=constrain(abs(poseNet.getHeadAngle())/20,0,1);
+      physicalChart.pushData(null , headDataCorrected, "head");
+
+      var shoulderDataCorrected=-(abs(poseNet.getShoulderAngle()/180)-1);
+      physicalChart.pushData(null , shoulderDataCorrected, "shoulders");
     }
-  } , 5000);
+  } , 1000);
 
 // mentalChart.updateData(20 , "sad");
 mentalChart.updateData([10,20],["happy" , "sad"]);
