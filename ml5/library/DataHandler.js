@@ -77,7 +77,6 @@ class DataHandler {
         var obj = this.config.data.datasets.filter((obj) => {
             if (obj.label == type) {
                 obj.data.push(y)
-                console.log(obj);
                 return obj;
             }
         });

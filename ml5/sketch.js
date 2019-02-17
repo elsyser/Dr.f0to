@@ -81,21 +81,46 @@ function preload(){
   // mentalChart.addDataset('sad');
 }
 
+function postData(url = ``, data = {}) {
+  // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => response.json()); // parses response to JSON
+}
 
 function setup() {
   
   
 
   setInterval(()=>{
+
+    //TODO remove hasFocus
     if(isCallibrated && document.hasFocus()){
-    // if(isCallibrated){
       var currDate = new Date().toLocaleTimeString();
       physicalChart.pushData(currDate , poseNet.getCurrentESD() , "spine");
       physicalChart.pushData(null , poseNet.getCurrentEED(), "distance");
       physicalChart.pushData(null , poseNet.getHeadAngle(), "head");
       physicalChart.pushData(null , poseNet.getShoulderAngle(), "shoulders");
+      var imgToSend = video;
+      // imgToSend.size(48,48);
+      imgToSend.loadPixels();
+      var baseString = imgToSend.canvas.toDataURL();
+      postData('http://172.16.191.205:5000/' , {img: baseString})
+      .then(data => console.log(data)) // JSON-string from `response.json()` call
+      .catch(error => console.error(error));
     }
-  } , 5000);
+  } , 2000);
 
 // mentalChart.updateData(20 , "sad");
 mentalChart.updateData([10,20],["happy" , "sad"]);
@@ -104,7 +129,6 @@ mentalChart.updateData([10,20],["happy" , "sad"]);
 
 // var i =0;
 function draw() {
-
   if (isCallibrated) {
     avarages.counter++;
     var currESD = poseNet.getCurrentESD();
@@ -119,16 +143,16 @@ function draw() {
     avarages.headAngle /= avarages.counter;
 
     if (abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()) {
-      console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
+      // console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
     }
     if (abs(abs(poseNet.getShoulderAngle()) - 180) > poseNet.shoulderAngleThreshold && poseNet.getShoulderAngle() != null) {
-      console.log("RAMENETE WE");
+      // console.log("RAMENETE WE");
     }
     if (abs(poseNet.getHeadAngle()) > poseNet.headAngleThreshold) {
-      console.log("Izprai si glawata wee");
+      // console.log("Izprai si glawata wee");
     }
     if ((currEED - poseNet.normalEED) > poseNet.monitorDistThreshold && poseNet.isPersonAvailable()) {
-      console.log("You're too close to the monitor");
+      // console.log("You're too close to the monitor");
     }
   }
 
