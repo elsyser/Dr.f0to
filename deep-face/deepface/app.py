@@ -4,7 +4,7 @@ import base64
 import cv2
 import numpy as np
 from fer import fer
-from flask import Flask, jsonify, request
+from flask import Flask, request
 
 __all__ = [
     'app',
@@ -28,7 +28,15 @@ def index():
         f.write(base64.b64decode(b64img))
 
     img = cv2.imread('out.jpg')
-    return jsonify(detector.detect_emotions(img))
+    res = detector.detect_emotions(img)
+
+    # Parse NumPy array
+    res[0]['box'] = res[0]['box'].tolist()
+    # Parse Floats
+    for key, val in res[0]['emotions'].items():
+        res[0]['emotions'][key] = str(val)
+
+    return json.dumps({'res': res})
 
 
 if __name__ == '__main__':
