@@ -7,10 +7,14 @@ const {
   Notification
 } = require('electron');
 
+
+
+
 const express = require('express')();
   wifi = require('node-wifi');
   image2base64 = require('image-to-base64');
   request = require('request');
+
 
 
 wifi.init({
@@ -89,6 +93,7 @@ function createWindow() {
     }
   ]);
 
+
   appIcon.on('click', function () {
     appIcon.popUpContextMenu(contextMenu);
   });
@@ -99,6 +104,13 @@ function createWindow() {
     if (process.platform == "darwin")
       app.dock.hide();
   });
+//   document.getElementById("exitButton").addEventListener("click", function (e) {
+//     // var window = remote.getCurrentWindow();
+//     // window.close();
+//     console.log("EXIT")
+// }); 
+  // console.log(mainWindow.getCurrentWindow());
+
 }
 app.on('ready', createWindow);
 
