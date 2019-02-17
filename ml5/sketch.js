@@ -84,12 +84,16 @@ function preload(){
 
 function setup() {
   
+  
+
   setInterval(()=>{
-    if(isCallibrated){
-      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getCurrentESD() , "spine");
-      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getCurrentEED(), "distance");
-      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getHeadAngle(), "head");
-      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getShoulderAngle(), "shoulders");
+    if(isCallibrated && document.hasFocus()){
+    // if(isCallibrated){
+      var currDate = new Date().toLocaleTimeString();
+      physicalChart.pushData(currDate , poseNet.getCurrentESD() , "spine");
+      physicalChart.pushData(null , poseNet.getCurrentEED(), "distance");
+      physicalChart.pushData(null , poseNet.getHeadAngle(), "head");
+      physicalChart.pushData(null , poseNet.getShoulderAngle(), "shoulders");
     }
   } , 5000);
 
