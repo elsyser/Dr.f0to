@@ -8,8 +8,8 @@ class PoseChecker{
         this.source = source;
         this.isLoaded = false;
         this.hunchedThreshold = 50;
-        this.shoulderAngleThreshold = 5;
-        this.headAngleThreshold = 5;
+        this.shoulderAngleThreshold = 7;
+        this.headAngleThreshold = 7;
         this.monitorDistThreshold = 20;
         this.normalESD = null;
         this.normalEED = null;

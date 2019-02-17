@@ -29,11 +29,18 @@ const video_options = {
   audio: false
 };
 
+var avarages = {
+  eed: 0,
+  esd: 0,
+  shouldersAngle:0,
+  headAngle: 0,
+  counter: 0
+};
+
+
 function preload(){
   var canvas = createCanvas(windowWidth, windowHeight).hidden = false;
   document.getElementById("defaultCanvas0").hidden = true;
-
-  
 
 
   video = createCapture(video_options);
@@ -78,11 +85,13 @@ function preload(){
 function setup() {
   
   setInterval(()=>{
-    var esd = poseNet.getCurrentESD();
-    if(esd && isCallibrated && document.hasFocus()){
-      physicalChart.pushData(new Date().toLocaleTimeString() , esd , "head");
+    if(isCallibrated){
+      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getCurrentESD() , "spine");
+      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getCurrentEED(), "distance");
+      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getHeadAngle(), "head");
+      physicalChart.pushData(new Date().toLocaleTimeString() , poseNet.getShoulderAngle(), "shoulders");
     }
-  } , 1000);
+  } , 5000);
 
 // mentalChart.updateData(20 , "sad");
 mentalChart.updateData([10,20],["happy" , "sad"]);
@@ -93,8 +102,18 @@ mentalChart.updateData([10,20],["happy" , "sad"]);
 function draw() {
 
   if (isCallibrated) {
+    avarages.counter++;
     var currESD = poseNet.getCurrentESD();
+    avarages.esd += currESD;
+    avarages.esd /= avarages.counter;
     var currEED = poseNet.getCurrentEED();
+    avarages.eed += currEED;
+    avarages.eed /= avarages.counter;
+    avarages.shouldersAngle += (poseNet.getShoulderAngle() - 180);
+    avarages.shouldersAngle /= avarages.counter;
+    avarages.headAngle += poseNet.getHeadAngle();
+    avarages.headAngle /= avarages.counter;
+
     if (abs(currESD - poseNet.normalESD) > poseNet.hunchedThreshold && poseNet.isPersonAvailable()) {
       console.log("Izpravi se be tupanar, shte ti eba maikata, glupak");
     }

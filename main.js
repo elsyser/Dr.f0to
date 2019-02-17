@@ -7,10 +7,15 @@ const {
   Notification
 } = require('electron');
 
+
+
+
 const express = require('express')();
 var wifi = require('node-wifi');
 const fetch = require('node-fetch');
+const jimp = require('jimp');
 const image2base64 = require('image-to-base64');
+
 
 wifi.init({
   iface: null // network interface, choose a random wifi interface if set to null
@@ -48,30 +53,27 @@ function createWindow() {
 
   mainWindow.hide();
 
+  // image2base64("./assets/Happy-Boy.jpg") // you can also to use url
+  // .then(
+  //     (response) => {
+  //         console.log(response); //cGF0aC90by9maWxlLmpwZw==
+  //         const body = {
+  //           img: response
+  //         };
+  //         fetch('http://172.16.191.205:5000/', {
+  //             method: 'POST',
+  //             body: JSON.stringify(body),
+  //           })
+  //           .then(res => console.log(res));
+  //       })
+  //     .catch(
+  //     (error) => {
+  //         console.log(error); //Exepection error....
+  //     }
+  // );
 
-  image2base64("./assets/Happy-Boy.jpg") // you can also to use url
-    .then(
-      (response) => {
-        console.log(response); //cGF0aC90by9maWxlLmpwZw==
-        const body = {
-          img: response
-        };
-        fetch('http://172.16.191.205:5000/', {
-            method: 'POST',
-            body: JSON.stringify(body),
-          })
-          .then(res => res.json())
-          .then(json => console.log(json));
-      }
-    )
-    .catch(
-      (error) => {
-        console.log(error); //Exepection error....
-      }
-    )
-
-
-
+    
+    
 
   appIcon = new Tray("./assets/elsys_logo.png");
   const contextMenu = Menu.buildFromTemplate([{
@@ -90,6 +92,7 @@ function createWindow() {
     }
   ]);
 
+
   appIcon.on('click', function () {
     appIcon.popUpContextMenu(contextMenu);
   });
@@ -100,6 +103,13 @@ function createWindow() {
     if (process.platform == "darwin")
       app.dock.hide();
   });
+//   document.getElementById("exitButton").addEventListener("click", function (e) {
+//     // var window = remote.getCurrentWindow();
+//     // window.close();
+//     console.log("EXIT")
+// }); 
+  // console.log(mainWindow.getCurrentWindow());
+
 }
 app.on('ready', createWindow);
 

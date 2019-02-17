@@ -35,6 +35,11 @@ body {
   font-family: Lato;
 }
 
+.button{
+    border-radius: 25px;
+    background-color: #ffffff;
+}
+
 /* Add a background color to the top navigation */
 .topnav {
     background-color: var(--main-bg-color);
@@ -86,10 +91,11 @@ body {
   
   /* The navigation menu links */
   .sidenav a {
-    padding: 8px 8px 8px 32px;
+    padding: 15%;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 30px;
     color: #ffffff;
+    text-align: center;
     display: block;
     transition: 0.3s;
   }
@@ -100,12 +106,19 @@ body {
     background-color: var(--main-hover-color);
   }
 
+.exit{
+  bottom: 90px;
+  left:10px;
+  color: #d62323;
+
+}
+
   /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
   #main {
     transition: margin-left .5s;
     padding: 20px;
   }
-  
+
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
