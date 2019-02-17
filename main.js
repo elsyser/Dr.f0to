@@ -9,11 +9,7 @@ const {
 
 const express = require('express')();
   wifi = require('node-wifi');
-  image2base64 = require('image-to-base64');
-  request = require('request');
-
-//Viktor's IP: 172.16.191.205:5000/
-const pyURL = 'http://172.16.191.205:5000/';
+  
 
 wifi.init({
   iface: null // network interface, choose a random wifi interface if set to null
