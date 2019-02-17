@@ -71,7 +71,9 @@ class DataHandler {
      * @param {String} type - Which dataset to put the data in
      */
     pushData(x, y, type) {
-        this.config.data.labels.push(x);
+        if(x!=null){
+            this.config.data.labels.push(x);
+        }
         var obj = this.config.data.datasets.filter((obj) => {
             if (obj.label == type) {
                 obj.data.push(y)
