@@ -120,7 +120,7 @@ function setup() {
       imgToSend.loadPixels();
       var baseString = imgToSend.canvas.toDataURL();
       var emotions = null;
-      postData('http://172.16.191.205:5000/', {
+      postData('http://localhost:5000/', {
         img: baseString
       })
         .then(data => {
