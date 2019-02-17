@@ -34,7 +34,8 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    frame: false
   });
   if (process.platform == "darwin")
     app.dock.hide();

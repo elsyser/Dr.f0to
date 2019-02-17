@@ -5,7 +5,6 @@ var physicalChart = null;
 var mentalChart = null;
 
 
-
 const poseNet_options = {
   imageScaleFactor: 0.2,
   outputStride: 16,
@@ -38,7 +37,6 @@ var emotionsAverage = {
   fear: 0,
   surprise: 0,
   neutral: 0,
-  counter: 0
 };
 
 
@@ -46,31 +44,28 @@ function preload() {
   var canvas = createCanvas(windowWidth, windowHeight).hidden = false;
   document.getElementById("defaultCanvas0").hidden = true;
 
-
   video = createCapture(video_options);
   video.size(640, 480);
   // document.getElementById("callibratePose").addEventListener('click', handleCallibration, false);
-
-
   video.hide();
+
 
   var cnvPhyical = document.getElementById("physicalChart").getContext("2d");
   physicalChart = new DataHandler(cnvPhyical, {
-    diagramName: "ESD (Eye-Shoulder Distance)",
+    diagramName: "Physical Wellbeing",
     xName: "Time",
-    yName: "Current Eye Shoulder Distance"
-  }, 'line');
+    yName: "Severity"
+  }, "line");
 
   var cnvMental = document.getElementById("mentalChart").getContext("2d");
   mentalChart = new DataHandler(cnvMental, {
-    diagramName: "Mental wellbeing",
+    diagramName: "Mental Wellbeing",
     xName: "",
     yName: "",
   }, "doughnut");
 
 
   poseNet = new PoseChecker(video, poseNet_options);
-
   poseNet.begin();
 
   //Setup the dataset fot the Line physicalChart
@@ -104,15 +99,12 @@ function postData(url = ``, data = {}) {
 }
 
 function setup() {
-
-
-
   setInterval(() => {
 
     //TODO remove hasFocus
     if (isCallibrated && document.hasFocus()) {
       var currDate = new Date().toLocaleTimeString();
-      var esdCorrected = -(constrain(poseNet.normalESD / poseNet.getCurrentESD(), 0, 1) - 1);
+      var esdCorrected = (-1)*(constrain(poseNet.normalESD / poseNet.getCurrentESD(), 0, 1) - 1);
       physicalChart.pushData(currDate, esdCorrected, "spine");
 
       var eedCorrected = -(constrain(poseNet.normalEED / poseNet.getCurrentEED(), 0, 1) - 1);
@@ -134,7 +126,7 @@ function setup() {
         .then(data => {
           // console.log(data);
           emotions = data.res.emotions;
-          toAvarage(emotions);
+          expWeightedAvg(emotions);
           mentalChart.updateData([emotionsAverage.happy , emotionsAverage.sad , emotionsAverage.angry , emotionsAverage.surprise , emotionsAverage.neutral , emotionsAverage.disgust], 
                                 ["Happy" , "Sad" , "Angry" , "Surprise" , "Neutral" , "Disgust"]);
           // mentalChart.updateData([parseFloat(emotions.happy) , parseFloat(emotions.sad) , parseFloat(emotions.angry) , parseFloat(emotions.fear) , parseFloat(emotions.neutral) , emotions.disgust],
@@ -195,8 +187,8 @@ function handleCallibration() {
 //   resizeCanvas(window.width , window.height);
 // }
 
-function toAvarage(emotions) {
-  // emotionsAverage.counter++;
+function expWeightedAvg(emotions) {
+  // Beta coeff
   const b = 0.90
 
   emotionsAverage.happy = b * emotionsAverage.happy + (1 - b) * parseFloat(emotions.happy);
