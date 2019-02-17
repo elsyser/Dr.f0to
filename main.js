@@ -7,22 +7,17 @@ const {
   Notification
 } = require('electron');
 
-
-
-
 const express = require('express')();
   wifi = require('node-wifi');
   image2base64 = require('image-to-base64');
   request = require('request');
 
-
+//Viktor's IP: 172.16.191.205:5000/
+const pyURL = 'http://172.16.191.205:5000/';
 
 wifi.init({
   iface: null // network interface, choose a random wifi interface if set to null
 });
-
-//Viktor's IP: 172.16.191.205:5000/
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -30,7 +25,6 @@ let mainWindow;
 let appIcon = null;
 
 function createWindow() {
-
   express.listen(6969, () => {
     console.log("Express is listening");
   });
@@ -54,11 +48,8 @@ function createWindow() {
   mainWindow.hide();
 
   image2base64("./assets/happ2.jpg") // you can also to use url
-    .then(
-      (response) => {
+    .then((response) => {
         // console.log(response); //cGF0aC90by9maWxlLmpwZw==
-        const pyURL = 'http://172.16.191.205:5000/';
-
         request({
           method: 'POST',
           url: pyURL,
@@ -68,13 +59,10 @@ function createWindow() {
         });
       }
     )
-    .catch(
-      (error) => {
+    .catch((error) => {
         console.log(error); //Exepection error....
       }
     )
-
-
 
   appIcon = new Tray("./assets/elsys_logo.png");
   const contextMenu = Menu.buildFromTemplate([{
@@ -92,7 +80,6 @@ function createWindow() {
       }
     }
   ]);
-
 
   appIcon.on('click', function () {
     appIcon.popUpContextMenu(contextMenu);
@@ -112,6 +99,7 @@ function createWindow() {
   // console.log(mainWindow.getCurrentWindow());
 
 }
+
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
@@ -122,7 +110,6 @@ app.on('window-all-closed', function () {
     // app.quit();
   }
 });
-
 
 
 const openMainWindow = function () {
