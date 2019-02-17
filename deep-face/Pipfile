@@ -12,7 +12,7 @@ numpy = "*"
 tensorflow = "*"
 pandas = "*"
 matplotlib = "*"
-emopy = "*"
+fer = "*"
 flask = "*"
 requests = "*"
 

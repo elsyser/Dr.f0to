@@ -1,36 +1,34 @@
-import numpy as np
-import tensorflow as tf
+import json
+import base64
 
-from EmoPy.src.fermodel import FERModel
+import cv2
+import numpy as np
+from fer import fer
 from flask import Flask, jsonify, request
 
 __all__ = [
     'app',
-    
-    'target_mental_states',
-    'model',
-
+    'detector',
     'index'
 ]
 
 
 app = Flask(__name__)
 
-target_mental_states = ['calm', 'happiness', 'anger']
-model = FERModel(target_mental_states, verbose=True)
+detector = fer.FER()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    arr2d = request.get_json(force=True)['img']
-    
-    # with open('tmp', 'w') as f:
-    #     f.write(str(arr2d))
+    b64img = request.get_json(force=True)['img']
 
-    arr2d = list(map(float, arr2d))
-    arr2d = np.reshape(arr2d, (48, 48, 1))
+    with open('b64img', 'w') as f:
+        f.write(b64img)
 
-    label = np.argmax(model.model.predict([[arr2d]]))
-    return target_mental_states[label]
+    with open('out.jpg', 'wb') as f:
+        f.write(base64.b64decode(b64img))
+
+    img = cv2.imread('out.jpg')
+    return jsonify(detector.detect_emotions(img))
 
 
 if __name__ == '__main__':
