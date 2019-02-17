@@ -47,23 +47,6 @@ function createWindow() {
 
   mainWindow.hide();
 
-  image2base64("./assets/happ2.jpg") // you can also to use url
-    .then((response) => {
-        // console.log(response); //cGF0aC90by9maWxlLmpwZw==
-        request({
-          method: 'POST',
-          url: pyURL,
-          json: {img: response}
-        }, (error, response, body) => {
-          console.log(body);
-        });
-      }
-    )
-    .catch((error) => {
-        console.log(error); //Exepection error....
-      }
-    )
-
   appIcon = new Tray("./assets/elsys_logo.png");
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Open Dr.F0to',
