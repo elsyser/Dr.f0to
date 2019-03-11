@@ -105,6 +105,7 @@ function setup() {
     if (isCallibrated && document.hasFocus()) {
       var currDate = new Date().toLocaleTimeString();
       var esdCorrected = (-1)*(constrain(poseNet.normalESD / poseNet.getCurrentESD(), 0, 1) - 1);
+      // var esdCorrected = poseNet.normalESD / poseNet.getCurrentESD();
       physicalChart.pushData(currDate, esdCorrected, "spine");
 
       var eedCorrected = -(constrain(poseNet.normalEED / poseNet.getCurrentEED(), 0, 1) - 1);
@@ -120,7 +121,7 @@ function setup() {
       imgToSend.loadPixels();
       var baseString = imgToSend.canvas.toDataURL();
       var emotions = null;
-      postData('http://localhost:5000/', {
+      postData('http://95.87.231.152:5000/', {
         img: baseString
       })
         .then(data => {
