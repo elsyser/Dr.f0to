@@ -4,16 +4,10 @@ const {
   Menu,
   Tray,
   BrowserWindow,
-  Notification
+  Notification,
+  nativeImage
 } = require('electron');
 
-const express = require('express')();
-  wifi = require('node-wifi');
-  
-
-wifi.init({
-  iface: null // network interface, choose a random wifi interface if set to null
-});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -21,9 +15,6 @@ let mainWindow;
 let appIcon = null;
 
 function createWindow() {
-  express.listen(6969, () => {
-    console.log("Express is listening");
-  });
 
   //Change app name
   app.setName("Dr.F0to");
@@ -44,7 +35,8 @@ function createWindow() {
 
   mainWindow.hide();
 
-  appIcon = new Tray("./assets/elsys_logo.png");
+  var icon = nativeImage.createFromPath("./assets/elsys_logo.png");
+  appIcon = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Open Dr.F0to',
       type: 'normal',
@@ -75,7 +67,7 @@ function createWindow() {
 //     // var window = remote.getCurrentWindow();
 //     // window.close();
 //     console.log("EXIT")
-// }); 
+// });
   // console.log(mainWindow.getCurrentWindow());
 
 }
@@ -104,16 +96,6 @@ const quitApp = function () {
   app.quit();
 };
 
-
-express.get("/networkConnections", (req, res) => {
-  // List the current wifi connections
-  wifi.getCurrentConnections(function (err, currentConnections) {
-    if (err) {
-      console.log(err);
-    }
-    res.send(currentConnections);
-  });
-});
 
 
 // app.on('activate', function () {
